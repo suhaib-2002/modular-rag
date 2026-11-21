@@ -1,0 +1,78 @@
+========================================================
+ MODULAR RAG - Commands to run modular_rag.py
+ (Run in PowerShell, inside the modular-rag folder)
+========================================================
+
+STEP 1: Create a virtual environment  [only once]
+   python -m venv venv
+
+STEP 2: Activate it
+   .\venv\Scripts\Activate.ps1
+   (If PowerShell blocks scripts, run once:  Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+    CMD users:  venv\Scripts\activate.bat)
+
+STEP 3: Install requirements  [only once]
+   python -m pip install --upgrade pip
+   pip install -r requirements.txt
+
+STEP 4: Add YOUR Groq API key
+   Open the .env file and replace  your_groq_api_key_here  with your own key
+   (free key: https://console.groq.com -> API Keys)
+
+STEP 5: Add your documents
+   Put .pdf, .txt or .md files in the data/ folder (14 sample files are included).
+
+STEP 6: Start the backend
+   uvicorn modular_rag:app --reload
+   (or:  python modular_rag.py)
+
+STEP 7: Open the API page
+   http://localhost:8000/docs
+
+STEP 8: Use the API (open http://localhost:8000/docs, click an endpoint, click "Try it out", then "Execute")
+
+   GET  /health      nothing to enter. Shows the indexed chunk count and the files in data/.
+
+   GET  /pipelines   nothing to enter. Lists the modules and the four pipelines.
+
+   POST /upload      click "Choose File" and pick a .pdf, .txt or .md file from your computer.
+                     Response: {"saved": "yourfile.pdf"}
+                     The file is only saved. It is NOT searchable until you run /ingest.
+
+   POST /ingest      nothing to enter. Rebuilds the index from everything in data/.
+                     Run it first, and again after every upload. Response: {"indexed_chunks": 438}
+
+   POST /ask         replace the default body with:
+                     {
+                       "question": "What does the acronym BM25 mean?",
+                       "pipeline": "auto",
+                       "history": []
+                     }
+                     question = your question in plain text
+                     pipeline = auto (router decides) | direct | naive | keyword | full
+                     history  = earlier turns, only needed for follow-up questions (see below)
+                     Response: "answer", the "pipeline" and "steps" used, the router's "reason", and "sources".
+
+   Follow-up questions (memory): paste the earlier turns into "history", for example:
+                     {
+                       "question": "How could it be used with RAG?",
+                       "pipeline": "auto",
+                       "history": [
+                         {"role": "user", "content": "What is a knowledge graph?"},
+                         {"role": "assistant", "content": "A knowledge graph is a ..."}
+                       ]
+                     }
+
+   Suggested test order:
+   1. POST /ingest, then GET /health shows the chunk count (index is ready)
+   2. POST /ask "Hello there"                                     -> router picks direct
+   3. POST /ask "What does the acronym BM25 mean?"                -> router picks keyword
+   4. POST /ask "Compare dense retrieval with BM25 and explain vector databases"   -> router picks full
+   5. POST /ask the follow-up example above                        -> full (rewrite resolves "it")
+   6. POST /upload your own file, POST /ingest, then POST /ask a question about that file
+
+   Same from PowerShell (instead of the /docs page):
+   curl.exe -X POST http://localhost:8000/ingest
+   curl.exe -X POST http://localhost:8000/ask -H "Content-Type: application/json" -d "{\"question\": \"Hello there\", \"pipeline\": \"auto\"}"
+
+NOTE: the first "full" request downloads a reranker model (about 90 MB), so it is slower once.

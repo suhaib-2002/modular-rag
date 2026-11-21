@@ -44,7 +44,7 @@ data/               documents to search (14 sample Wikipedia files included)
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-# put your Groq key in .env  (GROQ_API_KEY=...)
+# a temporary Groq key is already in .env (replace it with your own if you like)
 uvicorn modular_rag:app --reload
 ```
 On Windows you can also just double-click `start.bat`. Then open http://localhost:8000/docs. Full commands are in [COMMANDS.txt](COMMANDS.txt). The first `full` request downloads the reranker model (about 90 MB).
@@ -73,7 +73,7 @@ Open http://localhost:8000/docs, click an endpoint, then **Try it out** and **Ex
 **Suggested test order:** `/ingest`; ask "Hello there" (goes to `direct`), "What does the acronym BM25 mean?" (`keyword`), and a comparison question (`full`); then a follow-up with `history`; then `/upload` your own file, `/ingest`, and `/ask` about it.
 
 ## Groq API key
-Open `.env` and set `GROQ_API_KEY` to your key (free at https://console.groq.com), then restart the server.
+A temporary key is included in `.env` so the code runs out of the box for testing. To use your own, set `GROQ_API_KEY` in `.env` (free at https://console.groq.com) and restart the server.
 
 ## Modular vs Hybrid RAG
 Hybrid RAG is one fixed retrieval strategy (dense + BM25 + RRF). Modular RAG treats that as one block (`retrieve_hybrid`) among several and decides per question which blocks to run.

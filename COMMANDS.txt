@@ -20,8 +20,9 @@ STEP 3: Install requirements  [only once]
    python -m pip install --upgrade pip
    pip install -r requirements.txt
 
-STEP 4: Add your Groq API key
-   Open the .env file and replace  your_groq_api_key_here  with your own key
+STEP 4: Groq API key
+   A temporary key is already in the .env file so the code runs out of the box.
+   To use your own: open .env and replace the value of GROQ_API_KEY
    (free key: https://console.groq.com -> API Keys), then restart the server.
 
 STEP 5: Add your documents

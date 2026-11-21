@@ -1,4 +1,12 @@
+# Virtual environment
 venv/
+
+# Python cache
 __pycache__/
 *.pyc
+
+# Generated vector index
 index/
+
+# Editor / tooling
+.claude/

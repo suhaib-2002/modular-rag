@@ -3,6 +3,11 @@
  (Run in PowerShell, inside the modular-rag folder)
 ========================================================
 
+EASIEST WAY (Windows): double-click start.bat. It creates the venv, installs the packages and starts the
+server. Then skip to STEP 7.
+
+OR follow the steps below manually.
+
 STEP 1: Create a virtual environment  [only once]
    python -m venv venv
 
@@ -15,16 +20,16 @@ STEP 3: Install requirements  [only once]
    python -m pip install --upgrade pip
    pip install -r requirements.txt
 
-STEP 4: Add YOUR Groq API key
+STEP 4: Add your Groq API key
    Open the .env file and replace  your_groq_api_key_here  with your own key
-   (free key: https://console.groq.com -> API Keys)
+   (free key: https://console.groq.com -> API Keys), then restart the server.
 
 STEP 5: Add your documents
    Put .pdf, .txt or .md files in the data/ folder (14 sample files are included).
 
 STEP 6: Start the backend
    uvicorn modular_rag:app --reload
-   (or:  python modular_rag.py)
+   (or:  python modular_rag.py   or double-click start.bat)
 
 STEP 7: Open the API page
    http://localhost:8000/docs

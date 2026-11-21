@@ -32,9 +32,10 @@ To add a capability, write one function and add its name to a pipeline.
 ## Project files
 ```
 modular_rag.py      the whole backend (indexing, modules, router, FastAPI)
+start.bat           double-click to create the venv, install packages and start the server
 requirements.txt    dependencies
 COMMANDS.txt        step-by-step run commands
-.env                your Groq API key and model settings
+.env                Groq API key and model settings
 data/               documents to search (14 sample Wikipedia files included)
 ```
 
@@ -43,10 +44,10 @@ data/               documents to search (14 sample Wikipedia files included)
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-# put your own Groq key in .env  (GROQ_API_KEY=...)
+# put your Groq key in .env  (GROQ_API_KEY=...)
 uvicorn modular_rag:app --reload
 ```
-Open http://localhost:8000/docs, run `POST /ingest`, then `POST /ask`. Full commands are in [COMMANDS.txt](COMMANDS.txt). The first `full` request downloads the reranker model (about 90 MB).
+On Windows you can also just double-click `start.bat`. Then open http://localhost:8000/docs. Full commands are in [COMMANDS.txt](COMMANDS.txt). The first `full` request downloads the reranker model (about 90 MB).
 
 ## How to use the API
 Open http://localhost:8000/docs, click an endpoint, then **Try it out** and **Execute**.
@@ -71,8 +72,8 @@ Open http://localhost:8000/docs, click an endpoint, then **Try it out** and **Ex
 
 **Suggested test order:** `/ingest`; ask "Hello there" (goes to `direct`), "What does the acronym BM25 mean?" (`keyword`), and a comparison question (`full`); then a follow-up with `history`; then `/upload` your own file, `/ingest`, and `/ask` about it.
 
-## Using your own key
-Edit `.env` and set `GROQ_API_KEY`. Never commit a real key to a public repository.
+## Groq API key
+Open `.env` and set `GROQ_API_KEY` to your key (free at https://console.groq.com), then restart the server.
 
 ## Modular vs Hybrid RAG
 Hybrid RAG is one fixed retrieval strategy (dense + BM25 + RRF). Modular RAG treats that as one block (`retrieve_hybrid`) among several and decides per question which blocks to run.
